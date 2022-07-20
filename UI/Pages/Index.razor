@@ -1,0 +1,9 @@
+﻿@page "/"
+@inject IConfiguration configuration
+
+<PageTitle>@configuration["Title"]</PageTitle>
+
+<div class="jumbotron">
+  <h1 class="display-4">Welcome to @configuration["Title"]!</h1>
+  <hr class="my-4">
+</div>
