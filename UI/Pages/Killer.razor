@@ -1,0 +1,50 @@
+﻿@page "/killer"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject HttpClient Http
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h3>
+    My running queries
+    <button class="btn btn-primary" disabled=@disabled @onclick="@Refresh">Refresh</button>
+</h3>
+@if (status != null)
+{
+    <div class="alert alert-primary" role="alert">@status</div>
+}
+else if (queries != null)
+{
+    <table class="table table-striped">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Status</th>
+                <th scope="col">In Run</th>
+                <th scope="col">Action</th>
+                <th scope="col">Query</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var query in queries)
+            {
+                <tr>
+                    <td>@query.Id</td>
+                    <td>@query.Status</td>
+                    <td>@query.In_run</td>
+                    <td>
+                        <button class="btn btn-outline-danger btn-sm" 
+                                disabled=@disabled
+                                @onclick="@(() => KillSession(@query.Id))">
+                            Kill Session
+                        </button>
+                    </td>
+                    <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+                        data-toggle="tooltip"
+                        title="@query.Command">
+                        <code>@query.Command</code>
+                    </td>
+                </tr>
+            }            
+        </tbody>
+    </table>
+}
