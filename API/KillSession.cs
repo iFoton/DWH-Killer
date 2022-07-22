@@ -23,10 +23,18 @@ public static class KillSession
     {
         try
         {
+            string constr = string.Join(';', 
+                Environment.GetEnvironmentVariable("SqlConnectionString")
+                    .Split(';')
+                    .Where((a) => !a.StartsWith("Command Timeout", StringComparison.OrdinalIgnoreCase) && 
+                                  !a.StartsWith("Authentication" , StringComparison.OrdinalIgnoreCase)));
+
             int sid = int.Parse(session.Substring(3, 8));
+
             var claims = new List<string> {
                 "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn",
                 "preferred_username" };
+
             var user = req.HttpContext.User.Claims.First(c => claims.Contains(c.Type))?.Value;
 
             var query = $@"
@@ -42,7 +50,7 @@ public static class KillSession
 
             log.LogInformation($"Kill session {session} for user {user}");
                         
-            using SqlConnection conn = new(Environment.GetEnvironmentVariable("SqlClientConnectionString"));
+            using SqlConnection conn = new(constr);
             conn.AccessToken = await new AzureServiceTokenProvider().GetAccessTokenAsync("https://database.windows.net/");
             using SqlCommand cmd = new(query, conn);
             cmd.CommandTimeout = 300;
