@@ -26,7 +26,7 @@ public static class GetUserRunningQueries
               AND s.[login_name] = @Login;",
             CommandType = System.Data.CommandType.Text,
             Parameters = "@Login={login}",
-            ConnectionStringSetting = "SqlBindConnectionString")]
+            ConnectionStringSetting = "SqlConnectionString")]
         IEnumerable<Queries> queries,
         ILogger log)
     {
