@@ -77,7 +77,6 @@ public partial class Killer
         finally
         {
             await GetQueries(user);
-            status = null;
         }
     }
 }
